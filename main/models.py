@@ -30,6 +30,9 @@ class Investments(models.Model):
     day = models.CharField(max_length=1000, blank=True)
     platform = models.CharField(max_length=1000, blank=True)
 
+   
+    
+
     
     class Meta:
         ordering = ('-plan',)
@@ -38,3 +41,6 @@ class Investments(models.Model):
 
     def __str__(self):
         return self.fullname
+
+
+            
