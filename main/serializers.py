@@ -5,10 +5,11 @@ from .models import Investments
 
 
 class InvestmentSerializer(serializers.ModelSerializer):
+	roi = serializers.ReadOnlyField()
 
 	
 	class Meta:
 		model = Investments
 		# fields = '__all__'
-		fields = ('uid', 'plan', 'amount', 'investor', 'phone', 'name', 'end', 'roi', 'status', 'unit', 'address', 'fullname')
+		fields = ('uid', 'plan', 'amount', 'investor', 'phone', 'name', 'start', 'end', 'status', 'unit', 'address', 'fullname', 'roi')
 	

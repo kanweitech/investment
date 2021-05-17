@@ -38,9 +38,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    #3rd Party Applications
+
+    'corsheaders',
+    'rest_framework.authtoken',
     'rest_framework',
+
+    #My Application
     'main',
 
+]
+
+CORS_ALLOW_CREDENTIALS = True # to accept cookies via ajax request
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:3000' # the domain for front-end app(you can add more than 1) 
 ]
 
 MIDDLEWARE = [
@@ -79,16 +90,23 @@ WSGI_APPLICATION = 'eatrichfarms.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'eatrich',
-        'USER': 'root',
-        'PASSWORD': '',
-        'PORT': 3306,
-        'HOST': '127.0.0.1'
-
-
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'eatrich',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'PORT': 3306,
+#         'HOST': '127.0.0.1'
+
+
+#     }
+# }
 
 
 # Password validation
@@ -128,3 +146,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
+
