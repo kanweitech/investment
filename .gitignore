@@ -1,0 +1,16 @@
+#Vscode
+.vscode/
+env/
+venv/
+# Static
+static
+
+### Django ###
+*.log
+*.pot
+*.pyc
+*.whl
+__pycache__/
+local_settings.py
+db.sqlite3
+media
