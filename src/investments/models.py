@@ -24,7 +24,7 @@ class Investments(models.Model):
         ('Complete', 'Complete'),)
 
     uid = models.AutoField(primary_key=True)
-    plan = models.CharField(max_length=1000, null=True) # Fallback for investment_plan
+    plan = models.CharField(max_length=1000, null=True, blank=True, editable=False) # Fallback for investment_plan
     investment_plan= models.ForeignKey("InvestmentPlan", on_delete=models.CASCADE, null=True, blank=True)
     amount = models.DecimalField(
         max_digits=12,
@@ -32,10 +32,19 @@ class Investments(models.Model):
         validators=[
             MinValueValidator(Decimal("0.00")),
         ],)
-    investor = models.CharField(max_length=1000) # Fallback for user
+    investor = models.CharField(max_length=1000, editable=False) # Fallback for user
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    start = models.DateField(max_length=1000, null=True, blank=True)
-    end = models.DateField(max_length=1000, null=True, blank=True)
+    start = models.CharField(max_length=1000, null=True, blank=True, editable=False) # Fallback for startdate
+    startdate = models.DateField(blank=True, null=True)
+    """
+    Start Date is updated when admin activates investment plan. The previous `start` date string was stored without proper parsing.
+    It strives to follow a Date Format: %d %b %Y %H:%M:%S %p. But fails a thorough check. Fall back fields will be archived" 
+    """
+    end = models.CharField(max_length=1000, null=True, blank=True, editable=False) # Fallback for enddate
+    enddate = models.DateField(blank=True, null=True)
+    """
+    End Date is updated when admin submits investor for Capital + ROI returns
+    """
     roi = models.CharField(max_length=1000, null=True) # Fallback for roi_metadata
     roi_metadata = models.JSONField(default=dict, help_text="This Contains breakdown of the Current ROI percentage during creation and the expected Returns")
     """
@@ -52,9 +61,8 @@ class Investments(models.Model):
         of the system. If a user has a filled roi_metadata then the user was created on this system. Otherwise we will
         fallback to the `roi` field.
     """
-    status = models.CharField(max_length=1000, choices=STATUS)
+    status = models.CharField(max_length=1000, choices=STATUS, default="Pending")
     unit = models.IntegerField()
-    fullname = models.CharField(max_length=1000)
     created= models.DateTimeField(auto_now_add=True)
     modified= models.DateTimeField(auto_now_add=True)
 
@@ -64,6 +72,13 @@ class InvestmentPlan(models.Model):
     plan_id = models.UUIDField(default=uuid.uuid4)
     name  = models.CharField(max_length=500)
     slug = AutoSlugField(populate_from='name')
+    unit_amount = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(Decimal("0.00")),
+        ],help_text="Price for a unit of this plan")
+
     roi_percentage = models.DecimalField(
         _("Roi"),
         default=0,
@@ -75,6 +90,11 @@ class InvestmentPlan(models.Model):
         help_text="Percentage Value for ROI e.g 50, 10.6, 4.99 etc.", )
     
     image_url = models.URLField()
+
+    created= models.DateTimeField(auto_now_add=True)
+    modified= models.DateTimeField(auto_now_add=True)
+
+
 
     def __str__(self) -> str:
         return str(self.plan_id)

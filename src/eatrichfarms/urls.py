@@ -49,7 +49,7 @@ urlpatterns = [
         r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"
     ),
 
-    path('', RedirectView.as_view(url='api-doc')),
+    path('', RedirectView.as_view(url='api-docs')),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
